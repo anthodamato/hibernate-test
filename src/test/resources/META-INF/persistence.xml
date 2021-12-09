@@ -1,0 +1,541 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+
+    <persistence-unit name="citizens">
+        <description>Citizen registry</description>
+        <class>com.test.hibernate.model.Citizen</class>
+        <class>com.test.hibernate.model.Address</class>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" /> 
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:citizens;create=true" />
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
+            
+            <!-- MySQL config -->
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />--> 
+            <!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/test" />-->
+            <!--<property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />-->
+            <!--<property name="javax.persistence.jdbc.user" value="root" />-->
+            <!--<property name="javax.persistence.jdbc.password" value="password" />-->
+
+            <!-- Postgres config -->
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />--> 
+            <!--<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/test" />-->
+            <!--<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />-->            
+            <!--<property name="javax.persistence.jdbc.user" value="postgres" />-->
+            <!--<property name="javax.persistence.jdbc.password" value="password" />-->
+            
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="movie">
+        <description>Properties</description>
+        <class>com.test.hibernate.model.Movie</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:movie;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="generic_list">
+        <description>Citizen Entity Only</description>
+        <class>com.test.hibernate.model.GenericList</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:genericlist;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="drop-and-create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_genericlist_db.sql" />
+        </properties>
+    </persistence-unit>
+
+
+    <persistence-unit name="books">
+        <description>Books</description>
+        <class>com.test.hibernate.model.BookSample</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_books_db.sql" />
+        </properties>
+    </persistence-unit>
+
+
+    <persistence-unit name="emb_books">
+        <description>Books</description>
+        <class>com.test.hibernate.model.Book</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_emb_books_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="emb_booking">
+        <description>Books</description>
+        <class>com.test.hibernate.model.HotelBooking</class>
+
+        <properties>
+            <!-- Apache Derby config -->
+            <!--<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />-->
+            <!--<property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:books;create=true" />-->
+            <!--<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />-->
+
+            <!-- Postgres config -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" /> 
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:postgresql://localhost/test" />
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />            
+            <property name="javax.persistence.jdbc.user" value="postgres" />
+            <property name="javax.persistence.jdbc.password" value="password" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="cities_uni">
+        <description>Cities</description>
+        <class>com.test.hibernate.model.onetoone.City</class>
+        <class>com.test.hibernate.model.onetoone.Region</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_onetoone_uni_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="onetoone_bid">
+        <description>Bidirectional One to One</description>
+        <class>com.test.hibernate.model.onetoone.Person</class>
+        <class>com.test.hibernate.model.onetoone.Fingerprint</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_onetoone_bid_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="onetoone_bid_lazy">
+        <description>Lazy Bidirectional One to One</description>
+        <class>com.test.hibernate.model.onetoone.lazy.State</class>
+        <class>com.test.hibernate.model.onetoone.lazy.Capital</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="manytoone_bid">
+        <description>Bidirectional Many to One</description>
+        <class>com.test.hibernate.model.Employee</class>
+        <class>com.test.hibernate.model.Department</class>
+        <properties>            
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:3306/test" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="com.mysql.cj.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.user" value="root" />
+            <property name="javax.persistence.jdbc.password" value="password" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="onetomany_uni">
+        <description>Unidirectional One to Many</description>
+        <class>com.test.hibernate.model.onetomany.Store</class>
+        <class>com.test.hibernate.model.onetomany.Item</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="otm_emb_booking">
+        <description>One To Many Books</description>
+        <class>com.test.hibernate.model.HotelBookingDetail</class>
+        <class>com.test.hibernate.model.HotelCustomer</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_otm_emb_booking_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="mapped_superclass">
+        <description>MappedSuperclass Test</description>
+        <class>com.test.hibernate.model.mappedsuperclass.Triangle</class>
+        <class>com.test.hibernate.model.mappedsuperclass.Square</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:books;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_mapped_superclass_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="stoves">
+        <description>Stoves</description>
+        <class>com.test.hibernate.model.Stove</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:stoves;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_stove_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="holidays">
+        <description>Holidays</description>
+        <class>com.test.hibernate.model.Holiday</class>
+
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:holidays;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+
+            <property
+                name="javax.persistence.schema-generation.database.action"
+                value="create" />
+            <property
+                name="javax.persistence.schema-generation.create-source"
+                value="script" />
+            <property
+                name="javax.persistence.schema-generation.create-script-source"
+                value="META-INF/create_holiday_db.sql" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="purchase_stats">
+        <description>Purchase Stats</description>
+        <class>com.test.hibernate.model.PurchaseStats</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:purchase_stats;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="order_many_to_many">
+        <description>Orders</description>
+        <class>com.test.hibernate.model.Customer</class>
+        <class>com.test.hibernate.model.Order</class>
+        <class>com.test.hibernate.model.Product</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:orders;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="property_many_to_many_uni">
+        <description>Properties</description>
+        <class>com.test.hibernate.model.Property</class>
+        <class>com.test.hibernate.model.PropertyOwner</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:orders;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="embed_many_to_one">
+        <description>Properties</description>
+        <class>com.test.hibernate.model.JobEmployee</class>
+        <class>com.test.hibernate.model.ProgramManager</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:embed_many_to_one;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+
+
+    <persistence-unit name="long_running">
+        <description>Properties</description>
+        <class>com.test.hibernate.model.RandomData</class>
+        <class>com.test.hibernate.model.RandomGroup</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:longrunning;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="items">
+        <description>Items</description>
+        <class>com.test.hibernate.model.StoreItem</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:store_items;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="booking_sale">
+        <description>Booking Sale</description>
+        <class>com.test.hibernate.model.Booking</class>
+        <class>com.test.hibernate.model.BookingSale</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:booking_sale;create=true" />
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver" />
+            <!--<property name="hibernate.hbm2ddl.auto" value="update" />-->
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="cascade_persist">
+        <description>Citizen registry</description>
+        <class>com.test.hibernate.model.JobCandidate</class>
+        <class>com.test.hibernate.model.SkillSet</class>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" /> 
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:cascade_persist;create=true" />
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />            
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="date_set">
+        <description>Date test</description>
+        <class>com.test.hibernate.model.DateSet</class>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" /> 
+            <!--<property name="hibernate.jdbc.time_zone" value="UTC" />--> 
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:date_set;create=true" />
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />            
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="temporal_dates">
+        <description>Temporal Date test</description>
+        <class>com.test.hibernate.model.TemporalDateSet</class>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" /> 
+            <!--<property name="hibernate.jdbc.time_zone" value="UTC" />--> 
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:temporal_dates;create=true" />
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />            
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="simple_order">
+        <description>Simple Order for Jpql</description>
+        <class>com.test.hibernate.model.SimpleOrder</class>
+        <class>com.test.hibernate.model.LineItem</class>
+        <class>com.test.hibernate.model.SimpleProduct</class>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" /> 
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:simple_order;create=true" />
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />            
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="item_sale_stats">
+        <description>Simple Order for Jpql</description>
+        <class>com.test.hibernate.model.ItemSaleStats</class>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" /> 
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:item_sale_stats;create=true" />
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />            
+            <property
+                name="javax.persistence.schema-generation.database.action" 
+                value="create" /> 
+            <property 
+                name="javax.persistence.schema-generation.create-source" 
+                value="metadata" /> 
+        </properties>
+    </persistence-unit>
+</persistence>
