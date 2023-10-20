@@ -18,31 +18,31 @@ public class Stove {
     private Boolean induction;
 
     public String getModel() {
-	return model;
+        return model;
     }
 
     public void setModel(String model) {
-	this.model = model;
+        this.model = model;
     }
 
     public Integer getNumberOfBurners() {
-	return numberOfBurners;
+        return numberOfBurners;
     }
 
     public void setNumberOfBurners(Integer numberOfBurners) {
-	this.numberOfBurners = numberOfBurners;
+        this.numberOfBurners = numberOfBurners;
     }
 
     public Boolean getInduction() {
-	return induction;
+        return induction;
     }
 
     public void setInduction(Boolean induction) {
-	this.induction = induction;
+        this.induction = induction;
     }
 
     public Long getId() {
-	return id;
+        return id;
     }
 
 }

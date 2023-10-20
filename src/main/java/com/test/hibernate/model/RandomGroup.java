@@ -29,23 +29,23 @@ public class RandomGroup {
     private Collection<RandomData> randomDataValues;
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public Collection<RandomData> getRandomDataValues() {
-	return randomDataValues;
+        return randomDataValues;
     }
 
     public void setRandomDataValues(Collection<RandomData> randomDataValues) {
-	this.randomDataValues = randomDataValues;
+        this.randomDataValues = randomDataValues;
     }
 
 }

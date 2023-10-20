@@ -40,31 +40,31 @@ public class Property {
     private Collection<PropertyOwner> owners;
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public PropertyType getPropertyType() {
-	return propertyType;
+        return propertyType;
     }
 
     public void setPropertyType(PropertyType propertyType) {
-	this.propertyType = propertyType;
+        this.propertyType = propertyType;
     }
 
     public String getAddress() {
-	return address;
+        return address;
     }
 
     public void setAddress(String address) {
-	this.address = address;
+        this.address = address;
     }
 
     public Collection<PropertyOwner> getOwners() {
-	return owners;
+        return owners;
     }
 
     public void setOwners(Collection<PropertyOwner> owners) {
-	this.owners = owners;
+        this.owners = owners;
     }
 
 }

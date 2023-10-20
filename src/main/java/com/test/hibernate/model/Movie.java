@@ -5,12 +5,9 @@
  */
 package com.test.hibernate.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- *
  * @author adamato
  */
 @Entity
@@ -18,24 +15,21 @@ import javax.persistence.Table;
 public class Movie {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     int id;
 
     private String name;
 
     public int getId() {
-	return id;
-    }
-
-    public void setId(int id) {
-	this.id = id;
+        return id;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
 }

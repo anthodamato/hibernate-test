@@ -22,26 +22,26 @@ public class Department {
     private Collection<Employee> employees = new HashSet<>();
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public void setId(Long id) {
-	this.id = id;
+        this.id = id;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public Collection<Employee> getEmployees() {
-	return employees;
+        return employees;
     }
 
     public void setEmployees(Collection<Employee> employees) {
-	this.employees = employees;
+        this.employees = employees;
     }
 }

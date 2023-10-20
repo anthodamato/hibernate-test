@@ -30,10 +30,12 @@ public class JpqlOrderTest {
 
 	private Logger LOG = Logger.getLogger(JpqlOrderTest.class);
 	private static EntityManagerFactory emf;
+	private static String testDb;
 
 	@BeforeAll
 	public static void beforeAll() {
 		emf = Persistence.createEntityManagerFactory("simple_order", PersistenceUnitProperties.getProperties());
+		testDb = System.getProperty("hibernate.test");
 	}
 
 	@AfterAll
@@ -51,8 +53,8 @@ public class JpqlOrderTest {
 		tx.commit();
 
 		tx.begin();
-		Query query = em.createQuery(
-				"SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = FALSE");
+		Query query = em
+				.createQuery("SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = FALSE");
 		List list = query.getResultList();
 		Assertions.assertTrue(!list.isEmpty());
 		Assertions.assertEquals(1, list.size());
@@ -77,10 +79,9 @@ public class JpqlOrderTest {
 		tx.commit();
 
 		tx.begin();
-		Query query = em.createQuery(
-				"SELECT DISTINCT o\n"
-				+ "  FROM SimpleOrder o JOIN o.lineItems l JOIN l.product p\n"
-				+ "  WHERE p.productType = 'office_supplies'");
+		Query query = em
+				.createQuery("SELECT DISTINCT o\n" + "  FROM SimpleOrder o JOIN o.lineItems l JOIN l.product p\n"
+						+ "  WHERE p.productType = 'office_supplies'");
 		List list = query.getResultList();
 		Assertions.assertTrue(!list.isEmpty());
 		Assertions.assertEquals(1, list.size());
@@ -105,17 +106,29 @@ public class JpqlOrderTest {
 		tx.commit();
 
 		tx.begin();
-		Query query = em.createQuery(
-				"SELECT o.id, CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP"
-				+ " FROM SimpleOrder o where o.createdAt >= CURRENT_DATE");
-		List list = query.getResultList();
-		Assertions.assertTrue(!list.isEmpty());
-		Assertions.assertEquals(1, list.size());
-		Object[] result = (Object[]) list.get(0);
-		Assertions.assertTrue(result[0] instanceof Long);
-		Assertions.assertTrue(result[1] instanceof java.sql.Date);
-		Assertions.assertTrue(result[2] instanceof java.sql.Time);
-		Assertions.assertTrue(result[3] instanceof java.sql.Timestamp);
+		if (testDb != null && testDb.equals("oracle")) {
+			Query query = em.createQuery("SELECT o.id, CURRENT_DATE, CURRENT_TIMESTAMP"
+					+ " FROM SimpleOrder o where o.createdAt >= CURRENT_DATE");
+			List list = query.getResultList();
+			Assertions.assertTrue(!list.isEmpty());
+			Assertions.assertEquals(1, list.size());
+			Object[] result = (Object[]) list.get(0);
+			Assertions.assertTrue(result[0] instanceof Long);
+			Assertions.assertTrue(result[1] instanceof java.sql.Date);
+			Assertions.assertTrue(result[2] instanceof java.sql.Timestamp);
+		} else {
+			Query query = em.createQuery("SELECT o.id, CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP"
+					+ " FROM SimpleOrder o where o.createdAt >= CURRENT_DATE");
+			List list = query.getResultList();
+			Assertions.assertTrue(!list.isEmpty());
+			Assertions.assertEquals(1, list.size());
+			Object[] result = (Object[]) list.get(0);
+			Assertions.assertTrue(result[0] instanceof Long);
+			Assertions.assertTrue(result[1] instanceof java.sql.Date);
+			Assertions.assertTrue(result[2] instanceof java.sql.Time);
+			Assertions.assertTrue(result[3] instanceof java.sql.Timestamp);
+		}
+
 		tx.commit();
 
 		tx.begin();

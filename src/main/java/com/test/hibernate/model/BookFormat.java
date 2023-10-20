@@ -9,19 +9,19 @@ public class BookFormat {
     private Integer pages;
 
     public String getFormat() {
-	return format;
+        return format;
     }
 
     public void setFormat(String format) {
-	this.format = format;
+        this.format = format;
     }
 
     public Integer getPages() {
-	return pages;
+        return pages;
     }
 
     public void setPages(Integer pages) {
-	this.pages = pages;
+        this.pages = pages;
     }
 
 }

@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import com.test.hibernate.model.onetoone.City;
 import com.test.hibernate.model.onetoone.Region;
+
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -114,6 +116,9 @@ public class OneToOneUniTest {
 
 	@Test
 	public void sum() throws Exception {
+		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.TRACE);
+		org.apache.log4j.Logger.getLogger("org.hibernate.type.descriptor.sql").setLevel(org.apache.log4j.Level.TRACE);
+		org.apache.log4j.Logger.getLogger("org.hibernate.orm.jdbc.bind").setLevel(org.apache.log4j.Level.TRACE);
 		final EntityManager em = emf.createEntityManager();
 		final EntityTransaction tx = em.getTransaction();
 		tx.begin();
@@ -121,6 +126,7 @@ public class OneToOneUniTest {
 		City yorkCity = new City();
 		yorkCity.setName("York");
 		yorkCity.setPopulation(210618);
+//		yorkCity.setPopulation(Integer.MAX_VALUE);
 
 		Region yorkShireRegion = createYorkshire();
 		em.persist(yorkShireRegion);
@@ -132,6 +138,7 @@ public class OneToOneUniTest {
 		City manchesterCity = new City();
 		manchesterCity.setName("Manchester");
 		manchesterCity.setPopulation(552858);
+//		manchesterCity.setPopulation(Integer.MAX_VALUE);
 
 		Region northWestRegion = createNorthWest();
 		em.persist(northWestRegion);
@@ -230,10 +237,14 @@ public class OneToOneUniTest {
 
 		em.persist(manchesterCity);
 
-		Query query = em.createNativeQuery("select AVG(city0.population) from City AS city0");
-		Integer avgPopulation = (Integer) query.getSingleResult();
+		Query query = em.createNativeQuery("select AVG(city0.population) from City city0");
+		Object avgPopulation = query.getSingleResult();
 		Assertions.assertNotNull(avgPopulation);
-		Assertions.assertEquals(381738, avgPopulation);
+		if (avgPopulation instanceof BigDecimal) {
+			// Oracle
+			Assertions.assertEquals(new BigDecimal(381738), avgPopulation);
+		} else
+			Assertions.assertEquals(381738, avgPopulation);
 
 		em.remove(yorkCity);
 		em.remove(manchesterCity);
@@ -295,8 +306,8 @@ public class OneToOneUniTest {
 		Region southEastRegion = createSouthEast();
 		em.persist(southEastRegion);
 
-		Query query = em.createQuery("select CONCAT('Region',' ',r.name), r.population from Region r"
-				+ " order by r.name");
+		Query query = em
+				.createQuery("select CONCAT('Region',' ',r.name), r.population from Region r" + " order by r.name");
 		List list = query.getResultList();
 		Assertions.assertEquals(4, list.size());
 
@@ -317,7 +328,8 @@ public class OneToOneUniTest {
 		Assertions.assertEquals(5284000, objects[1]);
 
 		// 2nd test
-		query = em.createQuery("select r from Region r where LENGTH(CONCAT('Region',' ',r.name)) = (select MAX(LENGTH(CONCAT('Region',' ',r2.name))) from Region r2)");
+		query = em.createQuery(
+				"select r from Region r where LENGTH(CONCAT('Region',' ',r.name)) = (select MAX(LENGTH(CONCAT('Region',' ',r2.name))) from Region r2)");
 
 		list = query.getResultList();
 		Assertions.assertEquals(1, list.size());
@@ -353,7 +365,8 @@ public class OneToOneUniTest {
 		Region southEastRegion = createSouthEast();
 		em.persist(southEastRegion);
 
-		Query query = em.createQuery("select distinct TRIM(SUBSTRING(r.name,LOCATE(' ',r.name))) as sub from Region r order by sub");
+		Query query = em.createQuery(
+				"select distinct TRIM(SUBSTRING(r.name,LOCATE(' ',r.name))) as sub from Region r order by sub");
 		List list = query.getResultList();
 		Assertions.assertEquals(2, list.size());
 

@@ -2,6 +2,7 @@ package com.test.hibernate.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,44 +15,45 @@ public class Holiday {
     private Long id;
 
     private Integer travellers;
+    @Column(name = "check_in")
     private LocalDate checkIn;
     private Integer nights;
     private String referenceName;
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public Integer getTravellers() {
-	return travellers;
+        return travellers;
     }
 
     public void setTravellers(Integer travellers) {
-	this.travellers = travellers;
+        this.travellers = travellers;
     }
 
     public LocalDate getCheckIn() {
-	return checkIn;
+        return checkIn;
     }
 
     public void setCheckIn(LocalDate checkIn) {
-	this.checkIn = checkIn;
+        this.checkIn = checkIn;
     }
 
     public Integer getNights() {
-	return nights;
+        return nights;
     }
 
     public void setNights(Integer nights) {
-	this.nights = nights;
+        this.nights = nights;
     }
 
     public String getReferenceName() {
-	return referenceName;
+        return referenceName;
     }
 
     public void setReferenceName(String referenceName) {
-	this.referenceName = referenceName;
+        this.referenceName = referenceName;
     }
 
 }

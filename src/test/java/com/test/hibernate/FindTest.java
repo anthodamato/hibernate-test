@@ -2,6 +2,7 @@ package com.test.hibernate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -25,91 +26,91 @@ import org.junit.jupiter.api.Test;
 
 import com.test.hibernate.model.Address;
 import com.test.hibernate.model.Citizen;
+
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.Expression;
+
 import org.apache.log4j.Logger;
 
 /**
- *
  * @author adamato
- *
  */
 public class FindTest {
 
-	private Logger LOG = Logger.getLogger(FindTest.class);
-	private static EntityManagerFactory emf;
+    private Logger LOG = Logger.getLogger(FindTest.class);
+    private static EntityManagerFactory emf;
 
-	@BeforeAll
-	public static void beforeAll() {
-		emf = Persistence.createEntityManagerFactory("citizens", PersistenceUnitProperties.getProperties());
-	}
+    @BeforeAll
+    public static void beforeAll() {
+        emf = Persistence.createEntityManagerFactory("citizens", PersistenceUnitProperties.getProperties());
+    }
 
-	@AfterAll
-	public static void afterAll() {
-		emf.close();
-	}
+    @AfterAll
+    public static void afterAll() {
+        emf.close();
+    }
 
-	@Test
-	public void find() throws Exception {
+    @Test
+    public void find() throws Exception {
 //		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.OFF);
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		Citizen citizen = new Citizen();
-		citizen.setName("Anthony");
-		em.persist(citizen);
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = new Citizen();
+        citizen.setName("Anthony");
+        em.persist(citizen);
 
-		Assertions.assertNotNull(citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
 
 //		em.detach(citizen);
-		Citizen c = em.find(Citizen.class, citizen.getId());
-		Assertions.assertNotNull(c);
-		Assertions.assertTrue(citizen == c);
-		Assertions.assertEquals("Anthony", c.getName());
+        Citizen c = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(c);
+        Assertions.assertTrue(citizen == c);
+        Assertions.assertEquals("Anthony", c.getName());
 
-		em.remove(c);
-		tx.commit();
-		em.close();
-	}
+        em.remove(c);
+        tx.commit();
+        em.close();
+    }
 
-	@Test
-	public void rollback() throws Exception {
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		Citizen citizen = new Citizen();
-		citizen.setName("Anthony");
-		em.persist(citizen);
+    @Test
+    public void rollback() throws Exception {
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = new Citizen();
+        citizen.setName("Anthony");
+        em.persist(citizen);
 
-		em.flush();
-		tx.rollback();
+        em.flush();
+        tx.rollback();
 
-		tx.begin();
-		Citizen c = em.find(Citizen.class, citizen.getId());
-		Assertions.assertNull(c);
-		tx.commit();
-		em.close();
-	}
+        tx.begin();
+        Citizen c = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNull(c);
+        tx.commit();
+        em.close();
+    }
 
-	@Test
-	public void lockEntity() throws Exception {
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		Citizen citizen = new Citizen();
-		citizen.setName("Anthony");
-		em.persist(citizen);
-		em.flush();
-		tx.commit();
+    @Test
+    public void lockEntity() throws Exception {
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = new Citizen();
+        citizen.setName("Anthony");
+        em.persist(citizen);
+        em.flush();
+        tx.commit();
 
-		tx.begin();
-		em.lock(citizen, LockModeType.PESSIMISTIC_WRITE);
-		citizen.setLastName("Smith");
-		em.persist(citizen);
-		em.flush();
-		em.refresh(citizen);
-		LockModeType lockModeType = em.getLockMode(citizen);
-		Assertions.assertEquals(LockModeType.OPTIMISTIC_FORCE_INCREMENT, lockModeType);
+        tx.begin();
+        em.lock(citizen, LockModeType.PESSIMISTIC_WRITE);
+        citizen.setLastName("Smith");
+        em.persist(citizen);
+        em.flush();
+        em.refresh(citizen);
+        LockModeType lockModeType = em.getLockMode(citizen);
+        Assertions.assertEquals(LockModeType.OPTIMISTIC_FORCE_INCREMENT, lockModeType);
 
 //	// new transaction, it should throws a lock timeout exception
 //	final EntityManager em2 = emf.createEntityManager();
@@ -120,409 +121,464 @@ public class FindTest {
 //	tx2.commit();
 //
 //	// previous transaction
-		citizen = em.find(Citizen.class, citizen.getId());
-		Assertions.assertEquals(LockModeType.OPTIMISTIC_FORCE_INCREMENT, em.getLockMode(citizen));
-		Assertions.assertEquals("Smith", citizen.getLastName());
-		tx.commit();
+        citizen = em.find(Citizen.class, citizen.getId());
+        Assertions.assertEquals(LockModeType.OPTIMISTIC_FORCE_INCREMENT, em.getLockMode(citizen));
+        Assertions.assertEquals("Smith", citizen.getLastName());
+        tx.commit();
 
-		tx.begin();
-		lockModeType = em.getLockMode(citizen);
-		Assertions.assertEquals(LockModeType.NONE, lockModeType);
-		em.remove(citizen);
-		tx.commit();
+        tx.begin();
+        lockModeType = em.getLockMode(citizen);
+        Assertions.assertEquals(LockModeType.NONE, lockModeType);
+        em.remove(citizen);
+        tx.commit();
 
-		em.close();
-	}
+        em.close();
+    }
 
-	private Citizen createCitizenAnthonySmith() {
-		Citizen citizen = new Citizen();
-		citizen.setName("Anthony");
-		citizen.setLastName("Smith");
-		return citizen;
-	}
+    private Citizen createCitizenAnthonySmith() {
+        Citizen citizen = new Citizen();
+        citizen.setName("Anthony");
+        citizen.setLastName("Smith");
+        return citizen;
+    }
 
-	private Citizen createCitizenLucySmith() {
-		Citizen citizen = new Citizen();
-		citizen.setName("Lucy");
-		citizen.setLastName("Smith");
-		return citizen;
-	}
+    private Citizen createCitizenLucySmith() {
+        Citizen citizen = new Citizen();
+        citizen.setName("Lucy");
+        citizen.setLastName("Smith");
+        return citizen;
+    }
 
-	private Citizen createCitizenCrown() {
-		Citizen citizen = new Citizen();
-		citizen.setName("Bill");
-		citizen.setLastName("Crown");
-		return citizen;
-	}
+    private Citizen createCitizenCrown() {
+        Citizen citizen = new Citizen();
+        citizen.setName("Bill");
+        citizen.setLastName("Crown");
+        return citizen;
+    }
 
-	private Citizen createCitizenWolf() {
-		Citizen citizen = new Citizen();
-		citizen.setName("David");
-		citizen.setLastName("Wolf");
-		return citizen;
-	}
+    private Citizen createCitizenWolf() {
+        Citizen citizen = new Citizen();
+        citizen.setName("David");
+        citizen.setLastName("Wolf");
+        return citizen;
+    }
 
-	@Test
-	public void criteria() {
+    @Test
+    public void criteria() {
 //		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.OFF);
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		Citizen citizen = createCitizenAnthonySmith();
-		em.persist(citizen);
-		Citizen c_Smith = em.find(Citizen.class, citizen.getId());
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = createCitizenAnthonySmith();
+        em.persist(citizen);
+        Citizen c_Smith = em.find(Citizen.class, citizen.getId());
 
-		citizen = createCitizenCrown();
-		em.persist(citizen);
-		Citizen c_Crown = em.find(Citizen.class, citizen.getId());
+        citizen = createCitizenCrown();
+        em.persist(citizen);
+        Citizen c_Crown = em.find(Citizen.class, citizen.getId());
 
-		Assertions.assertNotNull(citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
 
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
-		Root<Citizen> root = cq.from(Citizen.class);
-		cq.select(root);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
+        Root<Citizen> root = cq.from(Citizen.class);
+        cq.select(root);
 
-		TypedQuery<Citizen> typedQuery = em.createQuery(cq);
-		List<Citizen> citizens = typedQuery.getResultList();
+        TypedQuery<Citizen> typedQuery = em.createQuery(cq);
+        List<Citizen> citizens = typedQuery.getResultList();
 
-		Assertions.assertEquals(2, citizens.size());
+        Assertions.assertEquals(2, citizens.size());
 
-		// check the references
-		int counter = 0;
-		for (Citizen ct : citizens) {
-			if (ct.getId() == c_Crown.getId()) {
-				++counter;
-				Assertions.assertTrue(ct == c_Crown);
-			}
+        // check the references
+        int counter = 0;
+        for (Citizen ct : citizens) {
+            if (ct.getId() == c_Crown.getId()) {
+                ++counter;
+                Assertions.assertTrue(ct == c_Crown);
+            }
 
-			if (ct.getId() == c_Smith.getId()) {
-				++counter;
-				Assertions.assertTrue(ct == c_Smith);
-			}
-		}
+            if (ct.getId() == c_Smith.getId()) {
+                ++counter;
+                Assertions.assertTrue(ct == c_Smith);
+            }
+        }
 
-		Assertions.assertEquals(2, counter);
+        Assertions.assertEquals(2, counter);
 
-		em.remove(c_Crown);
-		em.remove(c_Smith);
-		tx.commit();
-		em.close();
-	}
+        em.remove(c_Crown);
+        em.remove(c_Smith);
+        tx.commit();
+        em.close();
+    }
 
-	@Test
-	public void equalCriteria() {
+    @Test
+    public void equalCriteria() {
 //		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.OFF);
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		try {
-			tx.begin();
-			Citizen citizen = createCitizenAnthonySmith();
-			em.persist(citizen);
-			Citizen c_Smith = em.find(Citizen.class, citizen.getId());
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = createCitizenAnthonySmith();
+        em.persist(citizen);
+        Citizen c_Smith = em.find(Citizen.class, citizen.getId());
 
-			citizen = createCitizenCrown();
-			em.persist(citizen);
-			Citizen c_Crown = em.find(Citizen.class, citizen.getId());
+        citizen = createCitizenCrown();
+        em.persist(citizen);
+        Citizen c_Crown = em.find(Citizen.class, citizen.getId());
 
-			Assertions.assertNotNull(citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
 
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
-			Root<Citizen> root = cq.from(Citizen.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
+        Root<Citizen> root = cq.from(Citizen.class);
 
-			Predicate predicate = cb.equal(root.get("lastName"), "Smith");
-			Assertions.assertEquals(BooleanOperator.AND, predicate.getOperator());
-			Assertions.assertEquals(Boolean.class, predicate.getJavaType());
-			Assertions.assertFalse(predicate.isCompoundSelection());
+        Predicate predicate = cb.equal(root.get("lastName"), "Smith");
+        Assertions.assertEquals(BooleanOperator.AND, predicate.getOperator());
+        Assertions.assertEquals(Boolean.class, predicate.getJavaType());
+        Assertions.assertFalse(predicate.isCompoundSelection());
 
-			cq.where(predicate);
-			System.out.println("equalCriteria: predicate=" + predicate);
-			List<Expression<Boolean>> expressions = predicate.getExpressions();
-			System.out.println("equalCriteria: expressions=" + expressions);
-			CriteriaQuery<Citizen> cqCitizen = cq.select(root);
+        cq.where(predicate);
+        System.out.println("equalCriteria: predicate=" + predicate);
+        List<Expression<Boolean>> expressions = predicate.getExpressions();
+        System.out.println("equalCriteria: expressions=" + expressions);
+        CriteriaQuery<Citizen> cqCitizen = cq.select(root);
 
-			TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
-			List<Citizen> citizens = typedQuery.getResultList();
+        TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
+        List<Citizen> citizens = typedQuery.getResultList();
 
-			Assertions.assertEquals(1, citizens.size());
+        Assertions.assertEquals(1, citizens.size());
 
-			// check the references
-			int counter = 0;
-			for (Citizen ct : citizens) {
-				if (ct.getId() == c_Smith.getId()) {
-					++counter;
-					Assertions.assertTrue(ct == c_Smith);
-				}
-			}
+        // check the references
+        int counter = 0;
+        for (Citizen ct : citizens) {
+            if (ct.getId() == c_Smith.getId()) {
+                ++counter;
+                Assertions.assertTrue(ct == c_Smith);
+            }
+        }
 
-			Assertions.assertEquals(1, counter);
+        Assertions.assertEquals(1, counter);
 
-			em.remove(c_Crown);
-			em.remove(c_Smith);
-		} finally {
-			tx.commit();
-			em.close();
-		}
-	}
+        em.remove(c_Crown);
+        em.remove(c_Smith);
 
-	@Test
-	public void equalCriteriaParameter() {
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		try {
-			tx.begin();
-			Citizen citizen = createCitizenAnthonySmith();
-			em.persist(citizen);
-			Citizen c_Smith = em.find(Citizen.class, citizen.getId());
+        tx.commit();
+        em.close();
+    }
 
-			citizen = createCitizenCrown();
-			em.persist(citizen);
-			Citizen c_Crown = em.find(Citizen.class, citizen.getId());
+    @Test
+    public void equalCriteriaParameter() {
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = createCitizenAnthonySmith();
+        em.persist(citizen);
+        Citizen c_Smith = em.find(Citizen.class, citizen.getId());
 
-			Assertions.assertNotNull(citizen.getId());
+        citizen = createCitizenCrown();
+        em.persist(citizen);
+        Citizen c_Crown = em.find(Citizen.class, citizen.getId());
 
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
-			Root<Citizen> root = cq.from(Citizen.class);
+        Assertions.assertNotNull(citizen.getId());
 
-			Predicate predicate = cb.equal(root.get("lastName"), cb.parameter(String.class, "last_name"));
-			Assertions.assertEquals(BooleanOperator.AND, predicate.getOperator());
-			Assertions.assertEquals(Boolean.class, predicate.getJavaType());
-			Assertions.assertFalse(predicate.isCompoundSelection());
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
+        Root<Citizen> root = cq.from(Citizen.class);
 
-			cq.where(predicate);
+        Predicate predicate = cb.equal(root.get("lastName"), cb.parameter(String.class, "last_name"));
+        Assertions.assertEquals(BooleanOperator.AND, predicate.getOperator());
+        Assertions.assertEquals(Boolean.class, predicate.getJavaType());
+        Assertions.assertFalse(predicate.isCompoundSelection());
 
-			Set<ParameterExpression<?>> parameterExpressions = cq.getParameters();
-			Assertions.assertNotNull(parameterExpressions);
-			Assertions.assertFalse(parameterExpressions.isEmpty());
-			Assertions.assertEquals(1, parameterExpressions.size());
-			ParameterExpression<?> parameterExpression = parameterExpressions.iterator().next();
-			Assertions.assertEquals("last_name", parameterExpression.getName());
-			Assertions.assertEquals(String.class, parameterExpression.getJavaType());
-			Assertions.assertEquals(String.class, parameterExpression.getParameterType());
-			Assertions.assertNull(parameterExpression.getPosition());
+        cq.where(predicate);
 
-			Query query = em.createQuery(cq);
-			String lastName = "Smith";
-			query.setParameter("last_name", lastName);
-			Citizen c = (Citizen) query.getSingleResult();
+        Set<ParameterExpression<?>> parameterExpressions = cq.getParameters();
+        Assertions.assertNotNull(parameterExpressions);
+        Assertions.assertFalse(parameterExpressions.isEmpty());
+        Assertions.assertEquals(1, parameterExpressions.size());
+        ParameterExpression<?> parameterExpression = parameterExpressions.iterator().next();
+        Assertions.assertEquals("last_name", parameterExpression.getName());
+        Assertions.assertEquals(String.class, parameterExpression.getJavaType());
+        Assertions.assertEquals(String.class, parameterExpression.getParameterType());
+        Assertions.assertNull(parameterExpression.getPosition());
 
-			Assertions.assertNotNull(c);
+        Query query = em.createQuery(cq);
+        String lastName = "Smith";
+        query.setParameter("last_name", lastName);
+        Citizen c = (Citizen) query.getSingleResult();
 
-			em.remove(c_Crown);
-			em.remove(c_Smith);
-		} finally {
-			tx.commit();
-			em.close();
-		}
-	}
+        Assertions.assertNotNull(c);
 
-	@Test
-	public void orCriteria() {
-		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.ALL);
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		try {
-			tx.begin();
-			Citizen citizen = createCitizenAnthonySmith();
-			em.persist(citizen);
-			Citizen c_AnthonySmith = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_AnthonySmith);
+        em.remove(c_Crown);
+        em.remove(c_Smith);
 
-			citizen = createCitizenLucySmith();
-			em.persist(citizen);
-			Citizen c_LucySmith = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_LucySmith);
+        tx.commit();
+        em.close();
+    }
 
-			citizen = createCitizenCrown();
-			em.persist(citizen);
-			Citizen c_Crown = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_Crown);
+    @Test
+    public void equalAndCriteriaParameter() {
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = createCitizenAnthonySmith();
+        em.persist(citizen);
+        Citizen c_Smith = em.find(Citizen.class, citizen.getId());
 
-			citizen = createCitizenWolf();
-			em.persist(citizen);
-			Citizen c_Wolf = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_Wolf);
+        citizen = createCitizenCrown();
+        em.persist(citizen);
+        Citizen c_Crown = em.find(Citizen.class, citizen.getId());
 
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
-			Root<Citizen> root = cq.from(Citizen.class);
+        Assertions.assertNotNull(citizen.getId());
 
-			// lastname=='Smith' or 'lastName'=='Wolf'
-			Predicate lastNameSmith = cb.equal(root.get("lastName"), "Smith");
-			Assertions.assertEquals(BooleanOperator.AND, lastNameSmith.getOperator());
-			Assertions.assertEquals(Boolean.class, lastNameSmith.getJavaType());
-			Assertions.assertFalse(lastNameSmith.isCompoundSelection());
-			Assertions.assertTrue(lastNameSmith.getExpressions().isEmpty());
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
+        Root<Citizen> root = cq.from(Citizen.class);
 
-			Predicate lastNameWolf = cb.equal(root.get("lastName"), "Wolf");
+        Predicate predicate1 = cb.equal(root.get("lastName"), cb.parameter(String.class, "last_name"));
+        Assertions.assertEquals(BooleanOperator.AND, predicate1.getOperator());
+        Assertions.assertEquals(Boolean.class, predicate1.getJavaType());
+        Assertions.assertFalse(predicate1.isCompoundSelection());
 
-			Predicate orLastName = cb.or(lastNameSmith, lastNameWolf);
-			Assertions.assertFalse(orLastName.isCompoundSelection());
-			Assertions.assertEquals(BooleanOperator.OR, orLastName.getOperator());
-			Assertions.assertFalse(orLastName.getExpressions().isEmpty());
-			Assertions.assertEquals(2, orLastName.getExpressions().size());
+        Predicate predicate2 = cb.equal(root.get("name"), cb.parameter(String.class, "first_name"));
+        Predicate predicate = cb.and(predicate1, predicate2);
+        cq.where(predicate);
 
-			cq.where(orLastName);
-			CriteriaQuery<Citizen> cqCitizen = cq.select(root);
+        Set<ParameterExpression<?>> parameterExpressions = cq.getParameters();
+        Assertions.assertNotNull(parameterExpressions);
+        Assertions.assertFalse(parameterExpressions.isEmpty());
+        Assertions.assertEquals(2, parameterExpressions.size());
+        Optional<ParameterExpression<?>> optional = parameterExpressions.stream()
+                .filter(p -> p.getName().equals("last_name")).findFirst();
+        Assertions.assertFalse(optional.isEmpty());
+        ParameterExpression<?> parameterExpression = optional.get();
+        Assertions.assertEquals("last_name", parameterExpression.getName());
+        Assertions.assertEquals(String.class, parameterExpression.getJavaType());
+        Assertions.assertEquals(String.class, parameterExpression.getParameterType());
+        Assertions.assertNull(parameterExpression.getPosition());
 
-			TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
-			List<Citizen> citizens = typedQuery.getResultList();
+        optional = parameterExpressions.stream().filter(p -> p.getName().equals("first_name")).findFirst();
+        Assertions.assertFalse(optional.isEmpty());
+        parameterExpression = optional.get();
+        Assertions.assertEquals("first_name", parameterExpression.getName());
+        Assertions.assertEquals(String.class, parameterExpression.getJavaType());
+        Assertions.assertEquals(String.class, parameterExpression.getParameterType());
+        Assertions.assertNull(parameterExpression.getPosition());
 
-			Assertions.assertEquals(3, citizens.size());
+        Query query = em.createQuery(cq);
+        query.setParameter("last_name", "Smith");
+        query.setParameter("first_name", "Anthony");
+        Citizen c = (Citizen) query.getSingleResult();
 
-			// two 'or', one 'and'
-			Predicate nameDavid = cb.equal(root.get("name"), "David");
-			Predicate nameAnthony = cb.equal(root.get("name"), "Anthony");
-			Predicate orName = cb.or(nameDavid, nameAnthony);
+        Assertions.assertNotNull(c);
 
-			Predicate and = cb.and(orLastName, orName);
+        em.remove(c_Crown);
+        em.remove(c_Smith);
 
-			cq.where(and);
+        tx.commit();
+        em.close();
+    }
 
-			cqCitizen = cq.select(root);
-			typedQuery = em.createQuery(cqCitizen);
-			citizens = typedQuery.getResultList();
+    @Test
+    public void orCriteria() {
+        org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.ALL);
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
 
-			Assertions.assertEquals(2, citizens.size());
+        tx.begin();
+        Citizen citizen = createCitizenAnthonySmith();
+        em.persist(citizen);
+        Citizen c_AnthonySmith = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_AnthonySmith);
 
-			em.remove(c_Crown);
-			em.remove(c_AnthonySmith);
-			em.remove(c_LucySmith);
-			em.remove(c_Wolf);
-		} finally {
-			tx.commit();
-			em.close();
-		}
-	}
+        citizen = createCitizenLucySmith();
+        em.persist(citizen);
+        Citizen c_LucySmith = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_LucySmith);
 
-	@Test
-	public void notCriteria() {
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		try {
-			tx.begin();
-			Citizen citizen = createCitizenAnthonySmith();
-			em.persist(citizen);
-			Citizen c_AnthonySmith = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_AnthonySmith);
+        citizen = createCitizenCrown();
+        em.persist(citizen);
+        Citizen c_Crown = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_Crown);
 
-			citizen = createCitizenLucySmith();
-			em.persist(citizen);
-			Citizen c_LucySmith = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_LucySmith);
+        citizen = createCitizenWolf();
+        em.persist(citizen);
+        Citizen c_Wolf = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_Wolf);
 
-			citizen = createCitizenCrown();
-			em.persist(citizen);
-			Citizen c_Crown = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_Crown);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
+        Root<Citizen> root = cq.from(Citizen.class);
 
-			citizen = createCitizenWolf();
-			em.persist(citizen);
-			Citizen c_Wolf = em.find(Citizen.class, citizen.getId());
-			Assertions.assertNotNull(citizen.getId());
-			Assertions.assertTrue(citizen == c_Wolf);
+        // lastname=='Smith' or 'lastName'=='Wolf'
+        Predicate lastNameSmith = cb.equal(root.get("lastName"), "Smith");
+        Assertions.assertEquals(BooleanOperator.AND, lastNameSmith.getOperator());
+        Assertions.assertEquals(Boolean.class, lastNameSmith.getJavaType());
+        Assertions.assertFalse(lastNameSmith.isCompoundSelection());
+        Assertions.assertTrue(lastNameSmith.getExpressions().isEmpty());
 
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
-			Root<Citizen> root = cq.from(Citizen.class);
+        Predicate lastNameWolf = cb.equal(root.get("lastName"), "Wolf");
 
-			// not lastname=='Smith'
-			Predicate lastNameSmith = cb.equal(root.get("lastName"), "Smith");
-			Predicate not = cb.not(lastNameSmith);
-			Assertions.assertTrue(not.isNegated());
+        Predicate orLastName = cb.or(lastNameSmith, lastNameWolf);
+        Assertions.assertFalse(orLastName.isCompoundSelection());
+        Assertions.assertEquals(BooleanOperator.OR, orLastName.getOperator());
+        Assertions.assertFalse(orLastName.getExpressions().isEmpty());
+        Assertions.assertEquals(2, orLastName.getExpressions().size());
 
-			cq.where(not);
-			CriteriaQuery<Citizen> cqCitizen = cq.select(root);
+        cq.where(orLastName);
+        CriteriaQuery<Citizen> cqCitizen = cq.select(root);
 
-			TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
-			List<Citizen> citizens = typedQuery.getResultList();
+        TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
+        List<Citizen> citizens = typedQuery.getResultList();
 
-			Assertions.assertEquals(2, citizens.size());
-			CollectionUtils.containsAll(citizens, Arrays.asList(c_Wolf, c_Crown));
+        Assertions.assertEquals(3, citizens.size());
 
-			em.remove(c_Crown);
-			em.remove(c_AnthonySmith);
-			em.remove(c_LucySmith);
-			em.remove(c_Wolf);
-		} finally {
-			tx.commit();
-			em.close();
-		}
-	}
+        // two 'or', one 'and'
+        Predicate nameDavid = cb.equal(root.get("name"), "David");
+        Predicate nameAnthony = cb.equal(root.get("name"), "Anthony");
+        Predicate orName = cb.or(nameDavid, nameAnthony);
 
-	private Address createRegentStAddress() {
-		Address address = new Address();
-		address.setName("Regent St");
-		address.setPostcode("W1B4EA");
-		return address;
-	}
+        Predicate and = cb.and(orLastName, orName);
 
-	private Address createRomfordRdAddress() {
-		Address address = new Address();
-		address.setName("Romford");
-		return address;
-	}
+        cq.where(and);
 
-	@Test
-	public void isNullCriteria() {
-		final EntityManager em = emf.createEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		try {
-			tx.begin();
-			Address address = createRegentStAddress();
-			em.persist(address);
-			Address a_RegentSt = em.find(Address.class, address.getId());
-			Assertions.assertTrue(address == a_RegentSt);
+        cqCitizen = cq.select(root);
+        typedQuery = em.createQuery(cqCitizen);
+        citizens = typedQuery.getResultList();
 
-			address = createRomfordRdAddress();
-			em.persist(address);
-			Address a_RomfordRd = em.find(Address.class, address.getId());
-			Assertions.assertTrue(address == a_RomfordRd);
+        Assertions.assertEquals(2, citizens.size());
 
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Address> cq = cb.createQuery(Address.class);
-			Root<Address> root = cq.from(Address.class);
+        em.remove(c_Crown);
+        em.remove(c_AnthonySmith);
+        em.remove(c_LucySmith);
+        em.remove(c_Wolf);
 
-			// postcode is null
-			Predicate isNull = cb.isNull(root.get("postcode"));
-			cq.where(isNull);
+        tx.commit();
+        em.close();
+    }
 
-			cq.select(root);
+    @Test
+    public void notCriteria() {
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Citizen citizen = createCitizenAnthonySmith();
+        em.persist(citizen);
+        Citizen c_AnthonySmith = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_AnthonySmith);
 
-			TypedQuery<Address> typedQuery = em.createQuery(cq);
-			List<Address> citizens = typedQuery.getResultList();
+        citizen = createCitizenLucySmith();
+        em.persist(citizen);
+        Citizen c_LucySmith = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_LucySmith);
 
-			Assertions.assertEquals(1, citizens.size());
-			Assertions.assertTrue(CollectionUtils.containsAll(citizens, Arrays.asList(a_RomfordRd)));
+        citizen = createCitizenCrown();
+        em.persist(citizen);
+        Citizen c_Crown = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_Crown);
 
-			// postcode is not null
-			Predicate isNotNull = cb.isNull(root.get("postcode"));
-			cq.where(isNotNull);
+        citizen = createCitizenWolf();
+        em.persist(citizen);
+        Citizen c_Wolf = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNotNull(citizen.getId());
+        Assertions.assertTrue(citizen == c_Wolf);
 
-			cq.select(root);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Citizen> cq = cb.createQuery(Citizen.class);
+        Root<Citizen> root = cq.from(Citizen.class);
 
-			typedQuery = em.createQuery(cq);
-			citizens = typedQuery.getResultList();
+        // not lastname=='Smith'
+        Predicate lastNameSmith = cb.equal(root.get("lastName"), "Smith");
+        Predicate not = cb.not(lastNameSmith);
+        Assertions.assertTrue(not.isNegated());
 
-			Assertions.assertEquals(1, citizens.size());
-			Assertions.assertTrue(CollectionUtils.containsAll(citizens, Arrays.asList(a_RomfordRd)));
+        cq.where(not);
+        CriteriaQuery<Citizen> cqCitizen = cq.select(root);
 
-			em.remove(a_RegentSt);
-			em.remove(a_RomfordRd);
-		} finally {
-			tx.commit();
-			em.close();
-		}
-	}
+        TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
+        List<Citizen> citizens = typedQuery.getResultList();
+
+        Assertions.assertEquals(2, citizens.size());
+        CollectionUtils.containsAll(citizens, Arrays.asList(c_Wolf, c_Crown));
+
+        em.remove(c_Crown);
+        em.remove(c_AnthonySmith);
+        em.remove(c_LucySmith);
+        em.remove(c_Wolf);
+
+        tx.commit();
+        em.close();
+    }
+
+    private Address createRegentStAddress() {
+        Address address = new Address();
+        address.setName("Regent St");
+        address.setPostcode("W1B4EA");
+        return address;
+    }
+
+    private Address createRomfordRdAddress() {
+        Address address = new Address();
+        address.setName("Romford");
+        return address;
+    }
+
+    @Test
+    public void isNullCriteria() {
+        final EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        tx.begin();
+        Address address = createRegentStAddress();
+        em.persist(address);
+        Address a_RegentSt = em.find(Address.class, address.getId());
+        Assertions.assertTrue(address == a_RegentSt);
+
+        address = createRomfordRdAddress();
+        em.persist(address);
+        Address a_RomfordRd = em.find(Address.class, address.getId());
+        Assertions.assertTrue(address == a_RomfordRd);
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Address> cq = cb.createQuery(Address.class);
+        Root<Address> root = cq.from(Address.class);
+
+        // postcode is null
+        Predicate isNull = cb.isNull(root.get("postcode"));
+        cq.where(isNull);
+
+        cq.select(root);
+
+        TypedQuery<Address> typedQuery = em.createQuery(cq);
+        List<Address> citizens = typedQuery.getResultList();
+
+        Assertions.assertEquals(1, citizens.size());
+        Assertions.assertTrue(CollectionUtils.containsAll(citizens, Arrays.asList(a_RomfordRd)));
+
+        // postcode is not null
+        Predicate isNotNull = cb.isNull(root.get("postcode"));
+        cq.where(isNotNull);
+
+        cq.select(root);
+
+        typedQuery = em.createQuery(cq);
+        citizens = typedQuery.getResultList();
+
+        Assertions.assertEquals(1, citizens.size());
+        Assertions.assertTrue(CollectionUtils.containsAll(citizens, Arrays.asList(a_RomfordRd)));
+
+        em.remove(a_RegentSt);
+        em.remove(a_RomfordRd);
+
+        tx.commit();
+        em.close();
+    }
 
 //    @Test
 //    public void isNullCriteria2() {

@@ -18,69 +18,67 @@ import com.test.hibernate.model.RoomBookingId;
 
 /**
  * java -jar $DERBY_HOME/lib/derbyrun.jar server start
- *
+ * <p>
  * connect 'jdbc:derby://localhost:1527/test';
  *
  * @author adamato
- *
  */
 public class OtmEmbIdBookingTest {
 
-    @Test
-    public void persist() throws Exception {
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("otm_emb_booking", PersistenceUnitProperties.getProperties());
-	final EntityManager em = emf.createEntityManager();
-	try {
-	    final EntityTransaction tx = em.getTransaction();
-	    tx.begin();
+  @Test
+  public void persist() throws Exception {
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("otm_emb_booking",
+        PersistenceUnitProperties.getProperties());
+    final EntityManager em = emf.createEntityManager();
 
-	    HotelCustomer hotelCustomer1 = new HotelCustomer();
-	    hotelCustomer1.setName("Mark Bold");
-	    em.persist(hotelCustomer1);
+    final EntityTransaction tx = em.getTransaction();
+    tx.begin();
 
-	    HotelCustomer hotelCustomer2 = new HotelCustomer();
-	    hotelCustomer2.setName("Alexandra Bell");
-	    em.persist(hotelCustomer2);
+    HotelCustomer hotelCustomer1 = new HotelCustomer();
+    hotelCustomer1.setName("Mark Bold");
+    em.persist(hotelCustomer1);
 
-	    RoomBookingId roomBookingId = new RoomBookingId();
-	    Date date = Date.valueOf(LocalDate.of(2020, 10, 1));
-	    roomBookingId.setDateof(date);
-	    roomBookingId.setRoomNumber(23);
+    HotelCustomer hotelCustomer2 = new HotelCustomer();
+    hotelCustomer2.setName("Alexandra Bell");
+    em.persist(hotelCustomer2);
 
-	    HotelBookingDetail hotelBookingDetail = new HotelBookingDetail();
-	    hotelBookingDetail.setRoomBookingId(roomBookingId);
-	    hotelBookingDetail.setCustomers(Arrays.asList(hotelCustomer1, hotelCustomer2));
-	    hotelBookingDetail.setPrice(45.5f);
+    RoomBookingId roomBookingId = new RoomBookingId();
+    Date date = Date.valueOf(LocalDate.of(2020, 10, 1));
+    roomBookingId.setDateof(date);
+    roomBookingId.setRoomNumber(23);
 
-	    em.persist(hotelBookingDetail);
+    HotelBookingDetail hotelBookingDetail = new HotelBookingDetail();
+    hotelBookingDetail.setRoomBookingId(roomBookingId);
+    hotelBookingDetail.setCustomers(Arrays.asList(hotelCustomer1, hotelCustomer2));
+    hotelBookingDetail.setPrice(45.5f);
 
-	    Assertions.assertNotNull(hotelBookingDetail.getRoomBookingId());
-	    tx.commit();
+    em.persist(hotelBookingDetail);
 
-	    tx.begin();
-	    HotelBookingDetail b = em.find(HotelBookingDetail.class, hotelBookingDetail.getRoomBookingId());
-	    Assertions.assertTrue(b == hotelBookingDetail);
-	    Assertions.assertNotNull(b);
-	    RoomBookingId bookingId = b.getRoomBookingId();
-	    Assertions.assertNotNull(bookingId);
-	    Assertions.assertEquals(date, bookingId.getDateof());
+    Assertions.assertNotNull(hotelBookingDetail.getRoomBookingId());
+    tx.commit();
 
-	    em.detach(hotelBookingDetail);
-	    b = em.find(HotelBookingDetail.class, hotelBookingDetail.getRoomBookingId());
-	    Assertions.assertFalse(b == hotelBookingDetail);
-	    Assertions.assertNotNull(b);
+    tx.begin();
+    HotelBookingDetail b = em.find(HotelBookingDetail.class, hotelBookingDetail.getRoomBookingId());
+    Assertions.assertTrue(b == hotelBookingDetail);
+    Assertions.assertNotNull(b);
+    RoomBookingId bookingId = b.getRoomBookingId();
+    Assertions.assertNotNull(bookingId);
+    Assertions.assertEquals(date, bookingId.getDateof());
 
-	    HotelBookingDetail b2 = em.find(HotelBookingDetail.class, b.getRoomBookingId());
-	    Assertions.assertTrue(b2 == b);
+    em.detach(hotelBookingDetail);
+    b = em.find(HotelBookingDetail.class, hotelBookingDetail.getRoomBookingId());
+    Assertions.assertFalse(b == hotelBookingDetail);
+    Assertions.assertNotNull(b);
 
-	    em.remove(hotelCustomer1);
-	    em.remove(hotelCustomer2);
-	    em.remove(b);
-	    tx.commit();
-	} finally {
-	    em.close();
-	    emf.close();
-	}
-    }
+    HotelBookingDetail b2 = em.find(HotelBookingDetail.class, b.getRoomBookingId());
+    Assertions.assertTrue(b2 == b);
+
+    em.remove(hotelCustomer1);
+    em.remove(hotelCustomer2);
+    em.remove(b);
+    tx.commit();
+    em.close();
+    emf.close();
+  }
 
 }

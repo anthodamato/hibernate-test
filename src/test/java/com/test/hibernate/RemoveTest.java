@@ -15,33 +15,34 @@ public class RemoveTest {
 
     @Test
     public void remove() throws Exception {
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("citizens", PersistenceUnitProperties.getProperties());
-	final EntityManager em = emf.createEntityManager();
-	try {
-	    final EntityTransaction tx = em.getTransaction();
-	    tx.begin();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("citizens", PersistenceUnitProperties.getProperties());
+        final EntityManager em = emf.createEntityManager();
+        final EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-	    Citizen citizen = new Citizen();
-	    citizen.setName("Marc");
-	    em.persist(citizen);
+        Citizen citizen = new Citizen();
+        citizen.setName("Marc");
+        em.persist(citizen);
 
-	    Address address = new Address();
-	    address.setName("Regent St");
-	    em.persist(address);
+        Address address = new Address();
+        address.setName("Regent St");
+        em.persist(address);
 
-	    tx.commit();
+        tx.commit();
 
-	    em.remove(citizen);
+        tx.begin();
+        em.remove(citizen);
+        em.remove(address);
+        tx.commit();
 
-	    Citizen c = em.find(Citizen.class, citizen.getId());
-	    Assertions.assertNull(c);
+        Citizen c = em.find(Citizen.class, citizen.getId());
+        Assertions.assertNull(c);
 
-	    c = em.find(Citizen.class, address.getId());
-	    Assertions.assertNull(c);
-	} finally {
-	    em.close();
-	    emf.close();
-	}
+        c = em.find(Citizen.class, address.getId());
+        Assertions.assertNull(c);
+
+        em.close();
+        emf.close();
     }
 
 }

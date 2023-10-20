@@ -20,31 +20,32 @@ import com.test.hibernate.model.BookSample;
  */
 public class BookTest {
 
-    @Test
-    public void persist() throws Exception {
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("books", PersistenceUnitProperties.getProperties());
-	final EntityManager em = emf.createEntityManager();
-	final EntityTransaction tx = em.getTransaction();
-	tx.begin();
+	@Test
+	public void persist() throws Exception {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("books",
+				PersistenceUnitProperties.getProperties());
+		final EntityManager em = emf.createEntityManager();
+		final EntityTransaction tx = em.getTransaction();
+		tx.begin();
 
-	BookSample book = new BookSample();
-	book.setTitle("Marc");
-	em.persist(book);
+		BookSample book = new BookSample();
+		book.setTitle("Marc");
+		em.persist(book);
 
-	System.out.println("BookTest.persist: book.getId()=" + book.getId());
+		System.out.println("BookTest.persist: book.getId()=" + book.getId());
 
-	Assertions.assertNotNull(book.getId());
-	tx.commit();
+		Assertions.assertNotNull(book.getId());
+		tx.commit();
 
-	tx.begin();
-	book.setTitle("The Guardian");
-	tx.commit();
+		tx.begin();
+		book.setTitle("The Guardian");
+		tx.commit();
 
-	BookSample b = em.find(BookSample.class, book.getId());
-	Assertions.assertNotNull(b);
+		BookSample b = em.find(BookSample.class, book.getId());
+		Assertions.assertNotNull(b);
 
-	em.close();
-	emf.close();
-    }
+		em.close();
+		emf.close();
+	}
 
 }

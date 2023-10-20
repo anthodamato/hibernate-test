@@ -6,6 +6,7 @@
 **/dependency-reduced-pom.xml
 **/nb-configuration.xml
 **/.gradle/
-
+**/.idea/
+**/*.iml
 **/build/
 

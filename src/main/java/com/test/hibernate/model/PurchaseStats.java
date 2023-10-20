@@ -36,47 +36,47 @@ public class PurchaseStats {
     private Double cash;
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public LocalDate getStartDate() {
-	return startDate;
+        return startDate;
     }
 
     public void setStartDate(LocalDate startDate) {
-	this.startDate = startDate;
+        this.startDate = startDate;
     }
 
     public LocalDate getEndDate() {
-	return endDate;
+        return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
-	this.endDate = endDate;
+        this.endDate = endDate;
     }
 
     public Double getDebitCard() {
-	return debitCard;
+        return debitCard;
     }
 
     public void setDebitCard(Double debitCard) {
-	this.debitCard = debitCard;
+        this.debitCard = debitCard;
     }
 
     public Double getCreditCard() {
-	return creditCard;
+        return creditCard;
     }
 
     public void setCreditCard(Double creditCard) {
-	this.creditCard = creditCard;
+        this.creditCard = creditCard;
     }
 
     public Double getCash() {
-	return cash;
+        return cash;
     }
 
     public void setCash(Double cash) {
-	this.cash = cash;
+        this.cash = cash;
     }
 
 }

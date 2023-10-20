@@ -8,7 +8,6 @@ package com.test.hibernate.model;
 import javax.persistence.Id;
 
 /**
- *
  * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class JobEmployeeDetails {
@@ -19,33 +18,38 @@ public class JobEmployeeDetails {
     private String managerName;
 
     public JobEmployeeDetails(int id, String employeeName, String managerName) {
-	this.id = id;
-	this.employeeName = employeeName;
-	this.managerName = managerName;
+        this.id = id;
+        this.employeeName = employeeName;
+        this.managerName = managerName;
+    }
+
+    public JobEmployeeDetails(int id, String employeeName) {
+        this.id = id;
+        this.employeeName = employeeName;
     }
 
     public int getId() {
-	return id;
+        return id;
     }
 
     public void setId(int id) {
-	this.id = id;
+        this.id = id;
     }
 
     public String getEmployeeName() {
-	return employeeName;
+        return employeeName;
     }
 
     public void setEmployeeName(String employeeName) {
-	this.employeeName = employeeName;
+        this.employeeName = employeeName;
     }
 
     public String getManagerName() {
-	return managerName;
+        return managerName;
     }
 
     public void setManagerName(String managerName) {
-	this.managerName = managerName;
+        this.managerName = managerName;
     }
 
 }

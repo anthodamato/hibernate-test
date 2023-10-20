@@ -23,15 +23,15 @@ public class StoreItem {
     private Long amount;
 
     public Long getId() {
-	return id;
+        return id;
     }
 
     public Long getAmount() {
-	return amount;
+        return amount;
     }
 
     public void setAmount(Long amount) {
-	this.amount = amount;
+        this.amount = amount;
     }
 
 }
