@@ -1,34 +1,26 @@
 package com.test.hibernate;
 
+import com.test.hibernate.model.onetomany.Item;
 import com.test.hibernate.model.onetomany.Item_;
+import com.test.hibernate.model.onetomany.Store;
 import com.test.hibernate.model.onetomany.Store_;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.test.hibernate.model.onetomany.Item;
-import com.test.hibernate.model.onetomany.Store;
+import javax.persistence.*;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class OneToManyUniTest {
 
-    private Logger LOG = Logger.getLogger(OneToManyUniTest.class);
+    private static final Logger LOG = LogManager.getLogger(OneToManyUniTest.class);
 
     private static EntityManagerFactory emf;
     private Store store;

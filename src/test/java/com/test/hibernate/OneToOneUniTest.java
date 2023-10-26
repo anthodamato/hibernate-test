@@ -116,9 +116,9 @@ public class OneToOneUniTest {
 
 	@Test
 	public void sum() throws Exception {
-		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.TRACE);
-		org.apache.log4j.Logger.getLogger("org.hibernate.type.descriptor.sql").setLevel(org.apache.log4j.Level.TRACE);
-		org.apache.log4j.Logger.getLogger("org.hibernate.orm.jdbc.bind").setLevel(org.apache.log4j.Level.TRACE);
+//		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.TRACE);
+//		org.apache.log4j.Logger.getLogger("org.hibernate.type.descriptor.sql").setLevel(org.apache.log4j.Level.TRACE);
+//		org.apache.log4j.Logger.getLogger("org.hibernate.orm.jdbc.bind").setLevel(org.apache.log4j.Level.TRACE);
 		final EntityManager em = emf.createEntityManager();
 		final EntityTransaction tx = em.getTransaction();
 		tx.begin();

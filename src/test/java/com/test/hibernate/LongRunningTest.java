@@ -42,7 +42,7 @@ public class LongRunningTest {
 	@Disabled
 	@Test
 	public void randomGroups() throws Exception {
-		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.ALL);
+//		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.ALL);
 
 		Instant start = Instant.now();
 		final EntityManager em = emf.createEntityManager();

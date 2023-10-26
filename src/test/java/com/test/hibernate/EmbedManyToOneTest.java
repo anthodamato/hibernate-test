@@ -9,27 +9,23 @@ import com.test.hibernate.model.JobEmployee;
 import com.test.hibernate.model.JobEmployeeDetails;
 import com.test.hibernate.model.JobInfo;
 import com.test.hibernate.model.ProgramManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
-import org.junit.jupiter.api.*;
 
 /**
  * @author adamato
  */
 public class EmbedManyToOneTest {
 
-    private Logger LOG = Logger.getLogger(EmbedManyToOneTest.class);
+    private static final Logger LOG = LogManager.getLogger(EmbedManyToOneTest.class);
     private static EntityManagerFactory emf;
 
     @BeforeAll

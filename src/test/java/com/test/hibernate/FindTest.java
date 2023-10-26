@@ -30,14 +30,15 @@ import com.test.hibernate.model.Citizen;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.Expression;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author adamato
  */
 public class FindTest {
 
-    private Logger LOG = Logger.getLogger(FindTest.class);
+    private static final Logger LOG = LogManager.getLogger(FindTest.class);
     private static EntityManagerFactory emf;
 
     @BeforeAll
@@ -237,9 +238,7 @@ public class FindTest {
         Assertions.assertFalse(predicate.isCompoundSelection());
 
         cq.where(predicate);
-        System.out.println("equalCriteria: predicate=" + predicate);
         List<Expression<Boolean>> expressions = predicate.getExpressions();
-        System.out.println("equalCriteria: expressions=" + expressions);
         CriteriaQuery<Citizen> cqCitizen = cq.select(root);
 
         TypedQuery<Citizen> typedQuery = em.createQuery(cqCitizen);
@@ -380,7 +379,7 @@ public class FindTest {
 
     @Test
     public void orCriteria() {
-        org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.ALL);
+//        org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.ALL);
         final EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
 

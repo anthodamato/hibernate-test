@@ -1,27 +1,21 @@
 package com.test.hibernate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-
+import com.test.hibernate.model.Citizen;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.test.hibernate.model.Citizen;
-
-import javax.persistence.OptimisticLockException;
-
-import org.apache.log4j.Logger;
+import javax.persistence.*;
 
 /**
  * @author adamato
  */
 public class OptimisticLockTest {
 
-    private Logger LOG = Logger.getLogger(OptimisticLockTest.class);
+    private static final Logger LOG = LogManager.getLogger(OptimisticLockTest.class);
     private static EntityManagerFactory emf;
 
     @BeforeAll
