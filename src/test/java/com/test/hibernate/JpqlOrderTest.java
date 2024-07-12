@@ -53,7 +53,7 @@ public class JpqlOrderTest {
         Query query = em
                 .createQuery("SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = FALSE");
         List list = query.getResultList();
-        Assertions.assertTrue(!list.isEmpty());
+        Assertions.assertFalse(list.isEmpty());
         Assertions.assertEquals(1, list.size());
         Object so = list.get(0);
         Assertions.assertTrue(so instanceof SimpleOrder);
@@ -131,6 +131,58 @@ public class JpqlOrderTest {
         tx.begin();
         removeEntities(simpleOrder, em);
         tx.commit();
+
+        em.close();
+    }
+
+    @Test
+    public void simpleOrderTypedQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        TypedQuery<SimpleOrder> query = em
+                .createQuery("SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = FALSE",
+                        SimpleOrder.class);
+        List<SimpleOrder> list = query.getResultList();
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertEquals(1, list.size());
+        SimpleOrder so = list.get(0);
+        Assertions.assertEquals(so.getId(), simpleOrder.getId());
+        tx.commit();
+
+        tx.begin();
+        removeEntities(so, em);
+        tx.commit();
+
+        em.close();
+    }
+
+    @Test
+    public void simpleOrderTypedQueryException() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            TypedQuery<SimpleProduct> query = em
+                    .createQuery("SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = FALSE",
+                            SimpleProduct.class);
+            query.getResultList();
+        });
+        tx.commit();
+// TODO throws an exception it shouldn't
+//        tx.begin();
+//        removeEntities(simpleOrder, em);
+//        tx.commit();
 
         em.close();
     }
