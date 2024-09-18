@@ -10,10 +10,7 @@ import com.test.hibernate.model.SimpleOrder;
 import com.test.hibernate.model.SimpleProduct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -77,7 +74,7 @@ public class JpqlOrderTest {
 
         tx.begin();
         Query query = em
-                .createQuery("SELECT DISTINCT o\n" + "  FROM SimpleOrder o JOIN o.lineItems l JOIN l.product p\n"
+                .createQuery("SELECT DISTINCT o FROM SimpleOrder o JOIN o.lineItems l JOIN l.product p\n"
                         + "  WHERE p.productType = 'office_supplies'");
         List list = query.getResultList();
         Assertions.assertTrue(!list.isEmpty());
@@ -162,6 +159,10 @@ public class JpqlOrderTest {
         em.close();
     }
 
+    /**
+     * Run it singurarly.
+     */
+    @Disabled
     @Test
     public void simpleOrderTypedQueryException() {
         EntityManager em = emf.createEntityManager();
@@ -183,6 +184,102 @@ public class JpqlOrderTest {
 //        tx.begin();
 //        removeEntities(simpleOrder, em);
 //        tx.commit();
+
+        em.close();
+    }
+
+    @Test
+    public void simpleOrderNamedQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        Query query = em.createNamedQuery("notShippedOrders").setParameter("shipped", false);
+        List<?> list = query.getResultList();
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertEquals(1, list.size());
+        SimpleOrder so = (SimpleOrder) list.get(0);
+        Assertions.assertEquals(so.getId(), simpleOrder.getId());
+        tx.commit();
+
+        tx.begin();
+        removeEntities(so, em);
+        tx.commit();
+
+        em.close();
+    }
+
+    @Test
+    public void simpleOrderTypedAndNamedQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        TypedQuery<SimpleOrder> query = em.createNamedQuery("notShippedOrders", SimpleOrder.class)
+                .setParameter("shipped", false);
+        List<SimpleOrder> list = query.getResultList();
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertEquals(1, list.size());
+        SimpleOrder so = list.get(0);
+        Assertions.assertEquals(so.getId(), simpleOrder.getId());
+        tx.commit();
+
+        tx.begin();
+        removeEntities(so, em);
+        tx.commit();
+
+        em.close();
+    }
+
+    @Test
+    public void notExistingNamedQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+
+        tx.begin();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            em.createNamedQuery("notExistingNamedQuery").setParameter("shipped", false);
+        });
+        tx.commit();
+
+        em.close();
+    }
+
+
+    @Test
+    public void simpleOrderNamedQueryByEmf() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        Query query = em.createQuery("SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = :shipped");
+        em.getEntityManagerFactory().addNamedQuery("notShippedOrdersEmf", query);
+
+        TypedQuery<SimpleOrder> typedQuery = em.createNamedQuery("notShippedOrdersEmf", SimpleOrder.class)
+                .setParameter("shipped", false);
+        List<SimpleOrder> list = typedQuery.getResultList();
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertEquals(1, list.size());
+        SimpleOrder so = list.get(0);
+        Assertions.assertEquals(so.getId(), simpleOrder.getId());
+        tx.commit();
+
+        tx.begin();
+        removeEntities(so, em);
+        tx.commit();
 
         em.close();
     }

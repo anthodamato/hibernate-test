@@ -249,7 +249,7 @@ public class FindTest {
         // check the references
         int counter = 0;
         for (Citizen ct : citizens) {
-            if (ct.getId() == c_Smith.getId()) {
+            if (ct.getId().equals(c_Smith.getId())) {
                 ++counter;
                 Assertions.assertTrue(ct == c_Smith);
             }
