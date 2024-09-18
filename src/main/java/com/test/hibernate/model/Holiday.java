@@ -2,12 +2,12 @@ package com.test.hibernate.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "checkInPeriod", query = "select o from Holiday o where o.checkIn between :dateStart and :dateEnd")
+})
 public class Holiday {
 
     @GeneratedValue
