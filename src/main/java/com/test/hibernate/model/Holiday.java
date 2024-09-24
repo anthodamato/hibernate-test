@@ -6,7 +6,13 @@ import javax.persistence.*;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "checkInPeriod", query = "select o from Holiday o where o.checkIn between :dateStart and :dateEnd")
+        @NamedQuery(name = "checkInPeriod", query = "select h from Holiday h where h.checkIn between :dateStart and :dateEnd")
+})
+@NamedNativeQueries({
+        @NamedNativeQuery(
+                name = "nativeCheckInPeriod",
+                query = "select h.id, h.travellers, h.check_in, h.nights, h.referenceName from Holiday h where h.check_in between :dateStart and :dateEnd",
+                resultClass = Holiday.class)
 })
 public class Holiday {
 

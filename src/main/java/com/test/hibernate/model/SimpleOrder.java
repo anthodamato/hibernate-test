@@ -14,6 +14,13 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQuery(name = "notShippedOrders", query = "SELECT DISTINCT o FROM SimpleOrder AS o JOIN o.lineItems AS l WHERE l.shipped = :shipped")
+@NamedNativeQuery(
+        name = "nativeNotShippedOrders",
+        query = "SELECT distinct o.id, o.created_at from simple_order o INNER JOIN simple_order_line_item soli on o.id=soli.SimpleOrder_id inner join line_item l on soli.lineItems_id=l.id where l.shipped=:shipped",
+        resultClass = SimpleOrder.class)
+@NamedNativeQuery(
+        name = "nativeNotShippedOrdersNoType",
+        query = "SELECT distinct o.id, o.created_at from simple_order o INNER JOIN simple_order_line_item soli on o.id=soli.SimpleOrder_id inner join line_item l on soli.lineItems_id=l.id where l.shipped=:shipped")
 @Table(name = "simple_order")
 public class SimpleOrder {
 

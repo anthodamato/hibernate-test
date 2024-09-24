@@ -15,6 +15,7 @@ import org.junit.jupiter.api.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -284,33 +285,106 @@ public class JpqlOrderTest {
         em.close();
     }
 
+
+    @Test
+    public void simpleOrderNamedNativeQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        Query query = em.createNamedQuery("nativeNotShippedOrdersNoType").setParameter("shipped", false);
+        List<?> list = query.getResultList();
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertEquals(1, list.size());
+        Object[] so = (Object[]) list.get(0);
+        Long id = ((Number) so[0]).longValue();
+        Assertions.assertEquals(id, simpleOrder.getId());
+        Assertions.assertNotNull(so[1]);
+        Assertions.assertTrue(so[1] instanceof Date);
+        tx.commit();
+
+        tx.begin();
+        removeEntities(simpleOrder, em);
+        tx.commit();
+
+        em.close();
+    }
+
+
+    @Test
+    public void simpleOrderTypedAndNamedNativeQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        SimpleOrder simpleOrder = persistEntities(em);
+        tx.commit();
+
+        tx.begin();
+        TypedQuery<SimpleOrder> query = em.createNamedQuery("nativeNotShippedOrders", SimpleOrder.class)
+                .setParameter("shipped", false);
+        List<SimpleOrder> list = query.getResultList();
+        Assertions.assertFalse(list.isEmpty());
+        Assertions.assertEquals(1, list.size());
+        SimpleOrder so = list.get(0);
+        Assertions.assertEquals(so.getId(), simpleOrder.getId());
+        tx.commit();
+
+        tx.begin();
+        removeEntities(so, em);
+        tx.commit();
+
+        em.close();
+    }
+
+
+    @Test
+    public void notExistingNamedNativeQuery() {
+        EntityManager em = emf.createEntityManager();
+
+        EntityTransaction tx = em.getTransaction();
+
+        tx.begin();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            em.createNamedQuery("notExistingNamedNativeQuery").setParameter("shipped", false);
+        });
+        tx.commit();
+
+        em.close();
+    }
+
+
     private SimpleOrder persistEntities(EntityManager em) {
         SimpleProduct simpleProduct1 = new SimpleProduct();
         simpleProduct1.setProductType("office_supplies");
         em.persist(simpleProduct1);
-        LOG.info("simpleProduct1.getId()=" + simpleProduct1.getId());
+        LOG.info("simpleProduct1.getId()={}", simpleProduct1.getId());
         SimpleProduct simpleProduct2 = new SimpleProduct();
         simpleProduct2.setProductType("department_supplies");
         em.persist(simpleProduct2);
-        LOG.info("simpleProduct2.getId()=" + simpleProduct2.getId());
+        LOG.info("simpleProduct2.getId()={}", simpleProduct2.getId());
 
         LineItem lineItem1 = new LineItem();
         lineItem1.setProduct(simpleProduct1);
         lineItem1.setShipped(Boolean.FALSE);
         em.persist(lineItem1);
-        LOG.info("lineItem1.getId()=" + lineItem1.getId());
+        LOG.info("lineItem1.getId()={}", lineItem1.getId());
 
         LineItem lineItem2 = new LineItem();
         lineItem2.setProduct(simpleProduct2);
         lineItem2.setShipped(Boolean.FALSE);
         em.persist(lineItem2);
-        LOG.info("lineItem2.getId()=" + lineItem2.getId());
+        LOG.info("lineItem2.getId()={}", lineItem2.getId());
 
         SimpleOrder simpleOrder = new SimpleOrder();
         simpleOrder.setLineItems(Arrays.asList(lineItem1, lineItem2));
         simpleOrder.setCreatedAt(java.sql.Date.valueOf(LocalDate.now()));
         em.persist(simpleOrder);
-        LOG.info("simpleOrder.getId()=" + simpleOrder.getId());
+        LOG.info("simpleOrder.getId()={}", simpleOrder.getId());
         return simpleOrder;
     }
 
