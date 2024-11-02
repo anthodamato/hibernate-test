@@ -31,12 +31,7 @@ import com.test.hibernate.model.Book;
 import com.test.hibernate.model.BookFormat;
 
 /**
- * java -jar $DERBY_HOME/lib/derbyrun.jar server start
- *
- * connect 'jdbc:derby://localhost:1527/test';
- *
- * @author adamato
- *
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class EmbBookTest {
 

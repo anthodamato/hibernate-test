@@ -18,13 +18,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Antonio Damato <anto.damato@gmail.com>
+ */
 public class OneToManyUniTest {
 
     private static final Logger LOG = LogManager.getLogger(OneToManyUniTest.class);
 
     private static EntityManagerFactory emf;
-    private Store store;
-    private Collection<Item> items;
 
     @BeforeAll
     public static void beforeAll() {

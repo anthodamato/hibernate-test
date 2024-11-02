@@ -29,8 +29,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class PersistenceUnitProperties {
 
-    private static final Logger
-            LOG = LogManager.getLogger(PersistenceUnitProperties.class);
+    private static final Logger LOG = LogManager.getLogger(PersistenceUnitProperties.class);
 
     public static Map<String, String> getProperties() {
         String hibernateTest = System.getProperty("hibernate.test");
@@ -48,7 +47,6 @@ public class PersistenceUnitProperties {
 
         if (hibernateTest.equals("mariadb")) {
             Map<String, String> map = new HashMap<>();
-//	    map.put("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/test?user=root&password=password");
             map.put("javax.persistence.jdbc.url", "jdbc:mariadb://localhost:3306/test");
             map.put("javax.persistence.jdbc.driver", "org.mariadb.jdbc.Driver");
             map.put("javax.persistence.jdbc.user", "root");

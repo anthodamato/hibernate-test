@@ -649,4 +649,19 @@
         </properties>
     </persistence-unit>
 
+    <persistence-unit name="bid_lombok_onetomany">
+        <description>Bidirectional Lombok One to Many</description>
+        <class>com.test.hibernate.model.Continent</class>
+        <class>com.test.hibernate.model.Country</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:bid_lombok_onetomany;create=true"/>
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+
 </persistence>

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import javax.persistence.*;
 
 /**
- * @author adamato
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class OptimisticLockTest {
 

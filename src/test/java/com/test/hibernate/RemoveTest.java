@@ -5,17 +5,33 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.test.hibernate.model.Address;
 import com.test.hibernate.model.Citizen;
 
+/**
+ * @author Antonio Damato <anto.damato@gmail.com>
+ */
 public class RemoveTest {
+
+    private static EntityManagerFactory emf;
+
+    @BeforeAll
+    public static void beforeAll() {
+        emf = Persistence.createEntityManagerFactory("citizens", PersistenceUnitProperties.getProperties());
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        emf.close();
+    }
 
     @Test
     public void remove() throws Exception {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("citizens", PersistenceUnitProperties.getProperties());
         final EntityManager em = emf.createEntityManager();
         final EntityTransaction tx = em.getTransaction();
         tx.begin();

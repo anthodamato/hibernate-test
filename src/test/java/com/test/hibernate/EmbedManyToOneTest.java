@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author adamato
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class EmbedManyToOneTest {
 

@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import com.test.hibernate.model.DataTypes;
 
+/**
+ * @author Antonio Damato <anto.damato@gmail.com>
+ */
 public class DataTypesTest {
     private static EntityManagerFactory emf;
 

@@ -26,11 +26,7 @@ import org.junit.jupiter.api.Test;
 import com.test.hibernate.model.SearchData;
 
 /**
- * java -jar $DERBY_HOME/lib/derbyrun.jar server start
- * <p>
- * connect 'jdbc:derby://localhost:1527/test';
- *
- * @author adamato
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class SearchDataTest {
 

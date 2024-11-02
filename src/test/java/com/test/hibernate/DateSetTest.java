@@ -27,8 +27,7 @@ import java.util.GregorianCalendar;
  */
 public class DateSetTest {
 
-    private static final Logger
-            LOG = LogManager.getLogger(DateSetTest.class);
+    private static final Logger LOG = LogManager.getLogger(DateSetTest.class);
 
     private static EntityManagerFactory emf;
 
@@ -96,8 +95,6 @@ public class DateSetTest {
         Assertions.assertEquals(offsetDateTime.toEpochSecond(), ds.getOffsetDateTime().toEpochSecond());
         Assertions.assertEquals(offsetDateTime.getOffset(), ds.getOffsetDateTime().getOffset());
 
-//	log(offsetTime, "1");
-//	log(ds.getOffsetTime(), "2");
         Assertions.assertEquals(offsetTime.getHour(), ds.getOffsetTime().getHour());
         Assertions.assertEquals(offsetTime.getMinute(), ds.getOffsetTime().getMinute());
         Assertions.assertEquals(offsetTime.getSecond(), ds.getOffsetTime().getSecond());

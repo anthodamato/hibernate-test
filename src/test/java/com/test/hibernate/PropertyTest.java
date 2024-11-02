@@ -1,6 +1,7 @@
 package com.test.hibernate;
 
 import com.test.hibernate.model.onetomany.Store;
+
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -20,88 +22,90 @@ import org.junit.jupiter.api.Test;
 import com.test.hibernate.model.Property;
 import com.test.hibernate.model.PropertyOwner;
 import com.test.hibernate.model.PropertyType;
+
 import java.util.Arrays;
 import java.util.Collection;
 import javax.persistence.PersistenceException;
+
 import org.junit.jupiter.api.Assertions;
 
 /**
- * @author adamato
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class PropertyTest {
 
-  private static EntityManagerFactory emf;
+    private static EntityManagerFactory emf;
 
-  @BeforeAll
-  public static void beforeAll() {
-    emf = Persistence.createEntityManagerFactory("property_many_to_many_uni",
-        PersistenceUnitProperties.getProperties());
-  }
+    @BeforeAll
+    public static void beforeAll() {
+        emf = Persistence.createEntityManagerFactory("property_many_to_many_uni",
+                PersistenceUnitProperties.getProperties());
+    }
 
-  @AfterAll
-  public static void afterAll() {
-    emf.close();
-  }
+    @AfterAll
+    public static void afterAll() {
+        emf.close();
+    }
 
-  @Test
-  public void properties() throws Exception {
-    final EntityManager em = emf.createEntityManager();
+    @Test
+    public void properties() throws Exception {
+        final EntityManager em = emf.createEntityManager();
 
-    final EntityTransaction tx = em.getTransaction();
-    tx.begin();
+        final EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-    PropertyOwner owner1 = new PropertyOwner();
-    owner1.setName("Media Ltd");
-    em.persist(owner1);
+        PropertyOwner owner1 = new PropertyOwner();
+        owner1.setName("Media Ltd");
+        em.persist(owner1);
 
-    PropertyOwner owner2 = new PropertyOwner();
-    owner2.setName("Simply Ltd");
-    em.persist(owner2);
+        PropertyOwner owner2 = new PropertyOwner();
+        owner2.setName("Simply Ltd");
+        em.persist(owner2);
 
-    Property property = new Property();
-    property.setAddress("England Rd, London");
-    property.setOwners(Arrays.asList(owner1, owner2));
-    property.setPropertyType(PropertyType.apartment);
-    em.persist(property);
+        Property property = new Property();
+        property.setAddress("England Rd, London");
+        property.setOwners(Arrays.asList(owner1, owner2));
+        property.setPropertyType(PropertyType.apartment);
+        em.persist(property);
 
-    tx.commit();
+        tx.commit();
 
-    em.detach(property);
-    Property p = em.find(Property.class, property.getId());
-    Collection<PropertyOwner> owners = p.getOwners();
-    Assertions.assertNotNull(owners);
-    Assertions.assertEquals(2, owners.size());
+        em.detach(property);
+        Property p = em.find(Property.class, property.getId());
+        Collection<PropertyOwner> owners = p.getOwners();
+        Assertions.assertNotNull(owners);
+        Assertions.assertEquals(2, owners.size());
 
-    em.close();
-  }
+        em.close();
+    }
 
-  @Test
-  public void optional() {
-    final EntityManager em = emf.createEntityManager();
+    @Test
+    public void optional() {
+        final EntityManager em = emf.createEntityManager();
 
-    final EntityTransaction tx = em.getTransaction();
-    tx.begin();
+        final EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-    PropertyOwner owner1 = new PropertyOwner();
-    owner1.setName("Media Ltd");
-    em.persist(owner1);
+        PropertyOwner owner1 = new PropertyOwner();
+        owner1.setName("Media Ltd");
+        em.persist(owner1);
 
-    PropertyOwner owner2 = new PropertyOwner();
-    owner2.setName("Simply Ltd");
-    em.persist(owner2);
+        PropertyOwner owner2 = new PropertyOwner();
+        owner2.setName("Simply Ltd");
+        em.persist(owner2);
 
-    Property property = new Property();
-    property.setAddress("England Rd, London");
-    property.setOwners(Arrays.asList(owner1, owner2));
+        Property property = new Property();
+        property.setAddress("England Rd, London");
+        property.setOwners(Arrays.asList(owner1, owner2));
 
-    Assertions.assertThrows(PersistenceException.class, () -> {
-      em.persist(property);
-    });
+        Assertions.assertThrows(PersistenceException.class, () -> {
+            em.persist(property);
+        });
 
-    tx.commit();
+        tx.commit();
 
-    em.close();
-  }
+        em.close();
+    }
 
 
 }

@@ -17,78 +17,81 @@ import org.junit.jupiter.api.Test;
 
 import com.test.hibernate.model.NumericSet;
 
+/**
+ * @author Antonio Damato <anto.damato@gmail.com>
+ */
 public class NumericSetTest {
 
-	private static EntityManagerFactory emf;
+    private static EntityManagerFactory emf;
 
-	@BeforeAll
-	public static void beforeAll() {
-		emf = Persistence.createEntityManagerFactory("numeric_set", PersistenceUnitProperties.getProperties());
-	}
+    @BeforeAll
+    public static void beforeAll() {
+        emf = Persistence.createEntityManagerFactory("numeric_set", PersistenceUnitProperties.getProperties());
+    }
 
-	@AfterAll
-	public static void afterAll() {
-		emf.close();
-	}
+    @AfterAll
+    public static void afterAll() {
+        emf.close();
+    }
 
-	@Test
-	public void persist() throws Exception {
-		final EntityManager em = emf.createEntityManager();
-		final EntityTransaction tx = em.getTransaction();
-		tx.begin();
+    @Test
+    public void persist() throws Exception {
+        final EntityManager em = emf.createEntityManager();
+        final EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-		NumericSet numericSet1 = new NumericSet();
-		numericSet1.setDoubleValue(10.1);
-		numericSet1.setBdValue(new BigDecimal(10.2));
-		numericSet1.setIntValue(1000000);
-		em.persist(numericSet1);
+        NumericSet numericSet1 = new NumericSet();
+        numericSet1.setDoubleValue(10.1);
+        numericSet1.setBdValue(new BigDecimal(10.2));
+        numericSet1.setIntValue(1000000);
+        em.persist(numericSet1);
 
-		NumericSet numericSet2 = new NumericSet();
-		numericSet2.setDoubleValue(10.3);
-		numericSet2.setBdValue(new BigDecimal(10.5));
-		numericSet2.setIntValue(1000000);
-		em.persist(numericSet2);
+        NumericSet numericSet2 = new NumericSet();
+        numericSet2.setDoubleValue(10.3);
+        numericSet2.setBdValue(new BigDecimal(10.5));
+        numericSet2.setIntValue(1000000);
+        em.persist(numericSet2);
 
-		Query query = em.createQuery("select sum(ns.doubleValue) from NumericSet ns");
-		Object result = query.getSingleResult();
-		Assertions.assertTrue(result instanceof Double);
-		Assertions.assertEquals(20.4d, result);
+        Query query = em.createQuery("select sum(ns.doubleValue) from NumericSet ns");
+        Object result = query.getSingleResult();
+        Assertions.assertTrue(result instanceof Double);
+        Assertions.assertEquals(20.4d, result);
 
-		query = em.createQuery("select sum(ns.intValue) from NumericSet ns");
-		result = query.getSingleResult();
-		Assertions.assertTrue(result instanceof Long);
-		Assertions.assertEquals(2000000L, result);
+        query = em.createQuery("select sum(ns.intValue) from NumericSet ns");
+        result = query.getSingleResult();
+        Assertions.assertTrue(result instanceof Long);
+        Assertions.assertEquals(2000000L, result);
 
-		tx.rollback();
-		em.close();
-	}
+        tx.rollback();
+        em.close();
+    }
 
-	@Test
-	public void jpqlSum() throws Exception {
-		final EntityManager em = emf.createEntityManager();
-		final EntityTransaction tx = em.getTransaction();
-		tx.begin();
+    @Test
+    public void jpqlSum() throws Exception {
+        final EntityManager em = emf.createEntityManager();
+        final EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-		NumericSet numericSet1 = new NumericSet();
-		numericSet1.setDoubleValue(10.1d);
-		numericSet1.setBdValue(new BigDecimal(10.2));
-		numericSet1.setIntValue(1000000);
-		em.persist(numericSet1);
+        NumericSet numericSet1 = new NumericSet();
+        numericSet1.setDoubleValue(10.1d);
+        numericSet1.setBdValue(new BigDecimal(10.2));
+        numericSet1.setIntValue(1000000);
+        em.persist(numericSet1);
 
-		Query query = em.createQuery("select sum(ns.doubleValue)+0.2 from NumericSet ns");
-		Object result = query.getSingleResult();
-		Assertions.assertNotNull(result);
-		if (result instanceof Double) {
-			Assertions.assertEquals(Double.class, result.getClass());
-			MatcherAssert.assertThat((double) result, IsCloseTo.closeTo(10.3d, 0.1));
-		} else if (result instanceof BigDecimal) {
-			// oracle
-			Assertions.assertEquals(BigDecimal.class, result.getClass());
-			Assertions.assertEquals(10.3d, ((BigDecimal) result).doubleValue());
-		}
+        Query query = em.createQuery("select sum(ns.doubleValue)+0.2 from NumericSet ns");
+        Object result = query.getSingleResult();
+        Assertions.assertNotNull(result);
+        if (result instanceof Double) {
+            Assertions.assertEquals(Double.class, result.getClass());
+            MatcherAssert.assertThat((double) result, IsCloseTo.closeTo(10.3d, 0.1));
+        } else if (result instanceof BigDecimal) {
+            // oracle
+            Assertions.assertEquals(BigDecimal.class, result.getClass());
+            Assertions.assertEquals(10.3d, ((BigDecimal) result).doubleValue());
+        }
 
-		tx.rollback();
-		em.close();
-	}
+        tx.rollback();
+        em.close();
+    }
 
 }
