@@ -5,47 +5,52 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.test.hibernate.model.BookSample;
 
 /**
- * java -jar $DERBY_HOME/lib/derbyrun.jar server start
- *
- * connect 'jdbc:derby://localhost:1527/test';
- *
  * @author adamato
- *
  */
 public class BookTest {
 
-	@Test
-	public void persist() throws Exception {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("books",
-				PersistenceUnitProperties.getProperties());
-		final EntityManager em = emf.createEntityManager();
-		final EntityTransaction tx = em.getTransaction();
-		tx.begin();
+    private static EntityManagerFactory emf;
 
-		BookSample book = new BookSample();
-		book.setTitle("Marc");
-		em.persist(book);
+    @BeforeAll
+    public static void beforeAll() {
+        emf = Persistence.createEntityManagerFactory("books", PersistenceUnitProperties.getProperties());
+    }
 
-		System.out.println("BookTest.persist: book.getId()=" + book.getId());
+    @AfterAll
+    public static void afterAll() {
+        emf.close();
+    }
 
-		Assertions.assertNotNull(book.getId());
-		tx.commit();
+    @Test
+    public void persist() throws Exception {
+        final EntityManager em = emf.createEntityManager();
+        final EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
-		tx.begin();
-		book.setTitle("The Guardian");
-		tx.commit();
+        BookSample book = new BookSample();
+        book.setTitle("Marc");
+        em.persist(book);
 
-		BookSample b = em.find(BookSample.class, book.getId());
-		Assertions.assertNotNull(b);
+        Assertions.assertNotNull(book.getId());
+        tx.commit();
 
-		em.close();
-		emf.close();
-	}
+        tx.begin();
+        book.setTitle("The Guardian");
+        tx.commit();
+
+        BookSample b = em.find(BookSample.class, book.getId());
+        Assertions.assertNotNull(b);
+
+        em.close();
+        emf.close();
+    }
 
 }

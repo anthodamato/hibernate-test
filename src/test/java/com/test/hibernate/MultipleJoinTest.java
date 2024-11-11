@@ -12,6 +12,9 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author Antonio Damato <anto.damato@gmail.com>
+ */
 public class MultipleJoinTest {
 
     private static EntityManagerFactory emf;

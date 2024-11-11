@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @author adamato
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class PessimisticLockTest {
 
@@ -53,30 +53,6 @@ public class PessimisticLockTest {
         em.refresh(storeItem);
         Assertions.assertEquals(110, storeItem.getAmount());
         tx.commit();
-
-//	CompletableFuture.runAsync(() -> {
-//	    for (int i = 0; i < 5; ++i) {
-//		try {
-//		    System.out.println("pessimisticLock " + i);
-//		    Thread.sleep(1000);
-//		} catch (InterruptedException ex) {
-//		    System.out.println("pessimisticLock Interrupted");
-//		}
-//	    }
-//	}).thenApply(v -> {
-//	    for (int i = 0; i < 5; ++i) {
-//		try {
-//		    System.out.println("pessimisticLock 2 " + i);
-//		    Thread.sleep(1000);
-//		} catch (InterruptedException ex) {
-//		    System.out.println("pessimisticLock Interrupted");
-//		}
-//	    }
-//	    return null;
-//	});
-//
-////	Thread.sleep(10000);
-//	System.out.println("pessimisticLock Completed");
     }
 
     private void modifyStoreItem(Long id, int amountToAdd) {

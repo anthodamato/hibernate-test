@@ -23,6 +23,9 @@ import com.test.hibernate.model.Holiday;
 
 import javax.persistence.Query;
 
+/**
+ * @author Antonio Damato <anto.damato@gmail.com>
+ */
 public class HolidayTest {
 
     private static EntityManagerFactory emf;

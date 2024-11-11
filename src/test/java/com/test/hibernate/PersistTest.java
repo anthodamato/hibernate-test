@@ -25,14 +25,9 @@ import com.test.hibernate.model.Address;
 import com.test.hibernate.model.Citizen;
 
 /**
- * java -jar $DERBY_HOME/lib/derbyrun.jar server start
- * <p>
- * connect 'jdbc:derby://localhost:1527/test';
- *
- * @author adamato
+ * @author Antonio Damato <anto.damato@gmail.com>
  */
 public class PersistTest {
-//	private Logger LOG = LoggerFactory.getLogger(FindTest.class);
 
     private static EntityManagerFactory emf;
 
@@ -48,8 +43,6 @@ public class PersistTest {
 
     @Test
     public void persist() throws Exception {
-//		org.apache.log4j.Logger.getLogger("org.hibernate.SQL").setLevel(org.apache.log4j.Level.OFF);
-
         final EntityManager em = emf.createEntityManager();
         final EntityTransaction tx = em.getTransaction();
         tx.begin();
