@@ -664,4 +664,20 @@
         </properties>
     </persistence-unit>
 
+    <persistence-unit name="idclass">
+        <description>Bidirectional Lombok One to Many</description>
+        <class>com.test.hibernate.model.Clinician</class>
+        <class>com.test.hibernate.model.Doctor</class>
+        <class>com.test.hibernate.model.Patient</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:idclass;create=true"/>
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+
 </persistence>
