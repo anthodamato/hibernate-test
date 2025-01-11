@@ -664,4 +664,35 @@
         </properties>
     </persistence-unit>
 
+    <persistence-unit name="idclass">
+        <description>IdClass test</description>
+        <class>com.test.hibernate.model.Clinician</class>
+        <class>com.test.hibernate.model.Doctor</class>
+        <class>com.test.hibernate.model.Patient</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:idclass;create=true"/>
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="guestidclass">
+        <description>IdClass and Embedded Id foreign key test</description>
+        <class>com.test.hibernate.model.Guest</class>
+        <class>com.test.hibernate.model.GuestBooking</class>
+        <properties>
+            <property name="hibernate.dialect"
+                      value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:derby:memory:guestidclass;create=true"/>
+            <property name="javax.persistence.jdbc.driver"
+                      value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+
 </persistence>
