@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class ClinicianPk implements Serializable {
-    private String name;
-    private LocalDate dob;
+    String name;
+    LocalDate dob;
 
     public String getName() {
         return name;
